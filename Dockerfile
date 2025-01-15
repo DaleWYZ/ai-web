@@ -2,7 +2,9 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+# 设置npm镜像源
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm install
 COPY . .
 RUN npm run build
 
@@ -10,7 +12,9 @@ RUN npm run build
 FROM python:3.9-slim AS scraper
 WORKDIR /app
 COPY scraper/requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# 设置pip镜像源
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install --no-cache-dir -r requirements.txt
 COPY scraper/ ./scraper/
 
 # 运行阶段
@@ -25,8 +29,10 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=scraper /app/scraper ./scraper
 
-# 安装Python运行环境
-RUN apk add --no-cache python3 py3-pip
+# 安装Python运行环境（使用阿里云镜像源）
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk add --no-cache python3 py3-pip && \
+    pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 COPY --from=scraper /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 EXPOSE 3000
