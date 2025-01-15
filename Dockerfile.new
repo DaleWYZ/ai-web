@@ -6,10 +6,12 @@ WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 
-# 首先只复制配置文件并安装依赖
+# 首先复制所有配置文件
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY next.config.js ./
+
+# 安装依赖
 RUN npm config set registry https://registry.npmmirror.com && \
     npm install && \
     # 安装所有必要的类型声明文件和开发依赖
@@ -18,7 +20,8 @@ RUN npm config set registry https://registry.npmmirror.com && \
     npm install react react-dom next @next/font
 
 # 复制源代码
-COPY . .
+COPY src ./src
+COPY public ./public
 
 # 构建应用
 RUN npm run build

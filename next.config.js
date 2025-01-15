@@ -6,6 +6,9 @@ const nextConfig = {
   images: {
     domains: ['www.google.com'],
     unoptimized: true
+  },
+  experimental: {
+    outputFileTracingRoot: './'
   }
 }
 
