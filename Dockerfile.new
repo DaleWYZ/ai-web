@@ -12,8 +12,7 @@ COPY tsconfig.json ./
 COPY next.config.js ./
 
 # 安装依赖
-RUN npm config set registry https://registry.npmmirror.com && \
-    npm install && \
+RUN npm install && \
     # 安装所有必要的类型声明文件和开发依赖
     npm install -D @types/react @types/react-dom @types/node typescript && \
     # 安装其他可能需要的依赖
@@ -30,8 +29,7 @@ RUN npm run build
 FROM python:3.9-slim AS scraper
 WORKDIR /app
 COPY scraper/requirements.txt ./
-RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY scraper/ ./
 
 # 运行阶段
@@ -56,7 +54,6 @@ COPY --from=builder /app/.next/static ./.next/static
 # 复制Python爬虫
 COPY --from=scraper /app ./scraper
 RUN apk add --no-cache python3 py3-pip && \
-    pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip3 install --no-cache-dir -r scraper/requirements.txt
 
 # 创建数据目录并设置权限
