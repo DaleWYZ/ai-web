@@ -14,6 +14,8 @@ spec:
       labels:
         app: ai-web
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: 10.0.88.201
       containers:
       - name: ai-web
         image: ai-web:v1
