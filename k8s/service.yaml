@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ai-products-navigator
+  name: ai-web
 spec:
-  selector:
-    app: ai-products-navigator
+  type: NodePort
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3000
-  type: LoadBalancer 
+  - port: 3000
+    targetPort: 3000
+    nodePort: 30000
+  selector:
+    app: ai-web 
