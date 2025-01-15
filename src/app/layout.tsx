@@ -1,9 +1,12 @@
-import './globals.css'
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI Web',
-  description: 'AI Web Application',
+  title: 'AI 产品导航',
+  description: '发现最新、最热门的 AI 工具和产品',
 }
 
 export default function RootLayout({
@@ -13,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh">
-      <body>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 } 
