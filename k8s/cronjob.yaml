@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ai-products-scraper
+spec:
+  schedule: "0 */6 * * *"  # 每6小时运行一次
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: scraper
+            image: ai-products-navigator:latest
+            command: ['python3', '/app/scraper/ai_products_scraper.py']
+            volumeMounts:
+            - name: shared-data
+              mountPath: /app/public/data
+          volumes:
+          - name: shared-data
+            persistentVolumeClaim:
+              claimName: ai-products-data-pvc
+          restartPolicy: OnFailure 

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-products-navigator
+  labels:
+    app: ai-products-navigator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-products-navigator
+  template:
+    metadata:
+      labels:
+        app: ai-products-navigator
+    spec:
+      containers:
+      - name: ai-products-navigator
+        image: ai-products-navigator:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: data
+          mountPath: /app/public/data
+      volumes:
+      - name: data
+        emptyDir: {}
+      initContainers:
+      - name: scraper-init
+        image: ai-products-navigator:latest
+        command: ['python3', '/app/scraper/ai_products_scraper.py']
+        volumeMounts:
+        - name: data
+          mountPath: /app/public/data 
