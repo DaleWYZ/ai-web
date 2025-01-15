@@ -18,6 +18,9 @@ RUN npm install && \
     # 安装其他可能需要的依赖
     npm install react react-dom next @next/font
 
+# 创建必要的目录结构
+RUN mkdir -p src/components
+
 # 复制源代码
 COPY src ./src
 COPY public ./public
@@ -50,6 +53,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/next.config.js ./
 
 # 复制Python爬虫
 COPY --from=scraper /app ./scraper
